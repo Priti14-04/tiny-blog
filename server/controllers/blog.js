@@ -7,20 +7,32 @@ const postBlogs= async(req,res)=>{
     if(!title || !category || !content || !author){
         return res.status(400).json({
             success:false,
-            message:"AA Fields Are Required"
+            message:"All Fields Are Required"
         });
     }
 
     const newBlog = new Blog({
         title,
-        category,content,author
+        category,
+        content,
+        author,
+        slug:`temp-slug-${Date.now()}-${Math.random().toString()}`
     });
 
     const savedBlog = await newBlog.save();
+    
+
+    savedBlog.slug = `${title.toLowerCase().replace(/ /g, "-")}-${savedBlog._id}`.replace(/[^\w-]+/g, "");
+
+  
+    await savedBlog.save();
+
     res.status(201).json({
         success:true,
         message:"Blog Created Successfully",
         blog:savedBlog,
+        
+        
     })
 };
 

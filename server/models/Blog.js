@@ -12,6 +12,9 @@ const blogSchema = new Schema(
     category:{type:String , required:true},
     publishedAt:{type:Date},
     author:{type:Schema.Types.ObjectId, ref:"User",required:true},
+    slug:{type:String,required:true,unique:true}
+   
+
 },
 
 {
@@ -20,6 +23,6 @@ const blogSchema = new Schema(
 
 );
 
-const Blog = model("Blog".blogSchema)
+const Blog = model("Blog",blogSchema)
 
 export default Blog;

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { getCurrentUser } from '../util';
+import { getCurrentUser } from './../util';
 
 function AllBlogs() {
 
@@ -8,7 +8,8 @@ function AllBlogs() {
   useEffect(()=>{
    
     setUser(getCurrentUser());
-  } , [])
+  } , []);
+  
   return (
     <div>
      <h1>All Blogs</h1>

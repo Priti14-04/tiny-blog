@@ -1,6 +1,10 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import MarkdownEditor from '@uiw/react-markdown-editor';
 import { BLOG_CATEGORIES } from './../constants';
+import { useEffect } from 'react';
+import axios from "axios"
+import { getCurrentUser } from './../util';
+import toast ,{Toaster} from "react-hot-toast";
 
 
 function NewBlog() {
@@ -8,6 +12,30 @@ function NewBlog() {
    const[content,setContent] = useState("");
    const [title,setTitle] = useState("");
    const[category,setCategory]=useState(BLOG_CATEGORIES[0]);
+   const[user,setUser] = useState(null);
+
+    useEffect(() =>{
+      document.documentElement.setAttribute("data-color-mode" , "light");
+      setUser(getCurrentUser())
+    },[]);
+
+    const saveBlog = async()=>{
+     const response = await axios.post(`${import.meta.env.VITE_API_URL}/blogs`,{
+        title,
+        content,
+        category,
+        author:user?._id
+      });
+
+      if(response?.data?.success){
+        toast.success("Blog Saved Successfully");
+        setTimeout(()=>{
+          window.location.href="/";
+        },2000);
+        
+      };
+
+    };
 
   return (
     <div className='container mx-auto p-4'>
@@ -16,7 +44,7 @@ function NewBlog() {
       <input
        type="text"  
        placeholder='Blog Title'
-        className='border p2 w-full my-4'
+        className='border p-3 w-full my-4'
         value={title}
         onChange={(e)=> setTitle(e.target.value)}
         />
@@ -37,7 +65,10 @@ function NewBlog() {
         setContent(value);
       }}
     />
-  <button className='bg-blue-500 text-white px-4 py-2 mt-4 rounded cursor-pointer'>Save Blog </button>
+  <button className='bg-blue-500 text-white px-4 py-2 mt-4 rounded cursor-pointer' type="button"
+  onClick={saveBlog}>Save Blog </button>
+
+  <Toaster/>
     </div>
   )
 }

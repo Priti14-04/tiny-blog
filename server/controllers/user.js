@@ -70,7 +70,8 @@ const postLogin = async(req,res)=>{
         });
     }
 
-    const existingUser = await User.findOne({email,password :md5(password)}).select(
+    const existingUser = await User.findOne({email,password :md5(password)}).
+    select(
         "_id name email"
     );
 
