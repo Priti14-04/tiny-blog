@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
 import { postLogin, postSignup } from "./controllers/user.js";
-import { postBlogs } from "./controllers/blog.js";
+import { postBlogs, getBlogs } from "./controllers/blog.js";
 
 dotenv.config();
 
@@ -53,9 +53,10 @@ app.get("/", (req, res) => {
 
 // app.use(checkHeaderKey);
 
-app.post("/signup" , postSignup)
-app.post("/login" , postLogin)
-app.post("/blogs" ,postBlogs)
+app.post("/signup" , postSignup);
+app.post("/login" , postLogin);
+app.get("/blogs",  getBlogs);
+app.post("/blogs" ,postBlogs);
 
 
 

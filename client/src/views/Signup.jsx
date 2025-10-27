@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 
 function Signup() {
@@ -9,16 +9,16 @@ function Signup() {
     password: ""
   });
 
-  const signupUser = async () => {
-    try {
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}/signup`, user);
-
-      console.log(response.data);
-    } catch (error) {
-      console.error(error);
+ const signupUser = async () => {
+  try {
+    const response = await axios.post(`${import.meta.env.VITE_API_URL}/signup`, user);
+    if (response?.data?.success) {
+      window.location.href = "/login"; // Signup ke baad homepage par redirect
     }
+  } catch (error) {
+    // error handle kar sakte hain
   }
-
+}
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-lg">
@@ -50,7 +50,7 @@ function Signup() {
           <button 
             className="w-full bg-blue-500 text-white py-2 cursor-pointer rounded-lg font-semibold hover:bg-blue-600 transition duration-200" 
             type="button" 
-            onClick={signupUser}
+            onClick={signupUser} 
           >
             Signup
           </button>

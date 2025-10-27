@@ -12,7 +12,7 @@ const blogSchema = new Schema(
     category:{type:String , required:true},
     publishedAt:{type:Date},
     author:{type:Schema.Types.ObjectId, ref:"User",required:true},
-    slug:{type:String,required:true,unique:true}
+    slug:{type:String,required:true,unique:true},
    
 
 },

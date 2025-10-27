@@ -7,6 +7,7 @@ import NewBlog from './views/NewBlog'
 import EditBlog from './views/EditBlog'
 import Signup from './views/Signup'
 import Login from './views/Login'
+import ReadBlog from './views/ReadBlog'
 
 
 createRoot(document.getElementById('root')).render(
@@ -15,7 +16,7 @@ createRoot(document.getElementById('root')).render(
     <Route path="/" element={<AllBlogs/>}/>
     <Route path="/new" element={<NewBlog/>}/>
     <Route path="/edit/:id" element={<EditBlog/>}/>
-    <Route path="/blog/:slug" element={<NewBlog/>}/>
+    <Route path="/blog/:slug" element={<ReadBlog/>}/>
     <Route path="/login" element={<Login/>}/>
     <Route path="/signup" element={<Signup/>}/>
 
