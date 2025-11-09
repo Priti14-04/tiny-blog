@@ -1,9 +1,9 @@
-// ...existing code...
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 function Login() {
+  const navigate = useNavigate();
   const [user, setUser] = useState({
     email: "",
     password: "",
@@ -17,7 +17,7 @@ function Login() {
         const userObj = response.data.user || {};
         const userWithToken = { ...userObj, token };
         localStorage.setItem("loggedInUser", JSON.stringify(userWithToken));
-        window.location.href = "/";
+        navigate('/blogs'); // go to AllBlogs route
       } else {
         alert(response?.data?.message || "Login failed");
       }
@@ -65,4 +65,3 @@ function Login() {
 }
 
 export default Login;
-// ...existing code...

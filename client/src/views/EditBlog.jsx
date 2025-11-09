@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { getCurrentUser } from '../util';
 import MarkdownEditor from '@uiw/react-markdown-editor';
@@ -9,6 +9,8 @@ const BLOG_CATEGORIES = ["Technology", "Travel", "Food", "Lifestyle", "Fashion",
 
 function EditBlog() {
   const { slug } = useParams();
+  const navigate = useNavigate();
+
   const [content, setContent] = useState("");
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState(BLOG_CATEGORIES[0]);
@@ -26,30 +28,29 @@ function EditBlog() {
     try {
       const response = await axios.get(`${import.meta.env.VITE_API_URL}/blogs/${slug}`);
       const blog = response.data.data;
-       if (!blog) {
-      toast.error("Blog not found");
-      return;
-    }
 
-      
+      if (!blog) {
+        toast.error("Blog not found");
+        return;
+      }
+
       setTitle(blog.title);
       setContent(blog.content);
       setCategory(blog.category);
       setStatus(blog.status);
     } catch (error) {
-    // Show more specific error messages
-    if (error.response?.status === 404) {
-      toast.error("Blog not found");
-    } else if (error.response?.data?.message) {
-      toast.error(error.response.data.message);
-    } else {
-      toast.error("Failed to fetch blog");
+      if (error.response?.status === 404) {
+        toast.error("Blog not found");
+      } else if (error.response?.data?.message) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error("Failed to fetch blog");
+      }
+      console.error("Error details:", error);
+    } finally {
+      setLoading(false);
     }
-    console.error("Error details:", error);
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   const updateBlog = async () => {
     try {
@@ -64,7 +65,7 @@ function EditBlog() {
       if (response?.data?.success) {
         toast.success("Blog Updated Successfully");
         setTimeout(() => {
-          window.location.href = "/";
+          navigate("/"); // You can change this to navigate("/allblogs") if needed
         }, 2000);
       }
     } catch (error) {
@@ -74,7 +75,7 @@ function EditBlog() {
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div className="text-center p-10 text-xl">Loading...</div>;
   }
 
   return (
@@ -84,7 +85,7 @@ function EditBlog() {
       <input
         type="text"
         placeholder='Blog Title'
-        className='border p-3 w-full my-4'
+        className='border p-3 w-full my-4 rounded'
         value={title}
         onChange={(e) => setTitle(e.target.value)}
       />
@@ -93,7 +94,7 @@ function EditBlog() {
         <select 
           value={category} 
           onChange={(e) => setCategory(e.target.value)} 
-          className='border p-2'
+          className='border p-2 rounded'
         >
           {BLOG_CATEGORIES.map((cat) => (
             <option key={cat} value={cat}>
@@ -105,7 +106,7 @@ function EditBlog() {
         <select 
           value={status} 
           onChange={(e) => setStatus(e.target.value)}
-          className='border p-2'
+          className='border p-2 rounded'
         >
           <option value="draft">Draft</option>
           <option value="published">Published</option>
@@ -115,13 +116,11 @@ function EditBlog() {
       <MarkdownEditor
         value={content}
         height='500px'
-        onChange={(value) => {
-          setContent(value);
-        }}
+        onChange={(value) => setContent(value)}
       />
 
       <button 
-        className='bg-blue-500 text-white px-4 py-2 mt-4 rounded cursor-pointer'
+        className='bg-blue-500 text-white px-4 py-2 mt-4 rounded cursor-pointer hover:bg-blue-600 transition'
         type="button"
         onClick={updateBlog}
       >

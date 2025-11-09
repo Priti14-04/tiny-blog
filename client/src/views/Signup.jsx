@@ -1,24 +1,40 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 function Signup() {
+  const navigate = useNavigate();
   const [user, setUser] = useState({
     name: "",
     email: "",
     password: ""
   });
+  const [loading, setLoading] = useState(false);
 
- const signupUser = async () => {
-  try {
-    const response = await axios.post(`${import.meta.env.VITE_API_URL}/signup`, user);
-    if (response?.data?.success) {
-      window.location.href = "/login"; // Signup ke baad homepage par redirect
+  const signupUser = async () => {
+    // basic validation
+    if (!user.name.trim() || !user.email.trim() || !user.password) {
+      alert("All fields are required");
+      return;
     }
-  } catch (error) {
-    // error handle kar sakte hain
+
+    try {
+      setLoading(true);
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/signup`, user);
+      if (response?.data?.success) {
+        alert("Signup successful. Please login.");
+        navigate('/login');
+      } else {
+        alert(response?.data?.message || "Signup failed");
+      }
+    } catch (error) {
+      console.error("Signup error:", error);
+      alert(error.response?.data?.message || "Signup error");
+    } finally {
+      setLoading(false);
+    }
   }
-}
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-lg">
@@ -48,11 +64,12 @@ function Signup() {
           />
 
           <button 
-            className="w-full bg-blue-500 text-white py-2 cursor-pointer rounded-lg font-semibold hover:bg-blue-600 transition duration-200" 
-            type="button" 
-            onClick={signupUser} 
+            className="w-full bg-blue-500 text-white py-2 cursor-pointer rounded-lg font-semibold hover:bg-blue-600 transition duration-200 disabled:opacity-50"
+            type="button"
+            onClick={signupUser}
+            disabled={loading}
           >
-            Signup
+            {loading ? 'Signing up...' : 'Signup'}
           </button>
 
           <p className='mt-4 text-center'>
