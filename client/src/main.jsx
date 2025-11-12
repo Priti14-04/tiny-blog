@@ -8,17 +8,19 @@ import EditBlog from './views/EditBlog'
 import Signup from './views/Signup'
 import Login from './views/Login'
 import ReadBlog from './views/ReadBlog'
+import App from './App.jsx'
 
 
 createRoot(document.getElementById('root')).render(
  <BrowserRouter>
  <Routes>
+      <Route path="/" element={<App/>}/>
     <Route path="/blogs" element={<AllBlogs/>}/>
     <Route path="/new" element={<NewBlog/>}/>
     <Route path="/edit/:id" element={<EditBlog/>}/>
     <Route path="/blog/:slug" element={<ReadBlog/>}/>
     <Route path="/login" element={<Login/>}/>
-    <Route path="/" element={<Signup/>}/>
+    <Route path="/signup" element={<Signup/>}/>
 
     <Route
     path="*"

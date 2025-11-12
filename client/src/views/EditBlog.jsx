@@ -30,7 +30,7 @@ function EditBlog() {
       const blog = response.data.data;
 
       if (!blog) {
-        toast.error("Blog not found");
+        toast.error("Blog are found");
         return;
       }
 
