@@ -5,7 +5,7 @@ function ReadBlog() {
   const { state } = useLocation();
   const blog = state?.blog || JSON.parse(localStorage.getItem("selectedBlog"));
 
-  // Save blog in localStorage for refresh persistence
+  
   if (blog) {
     localStorage.setItem("selectedBlog", JSON.stringify(blog));
   }

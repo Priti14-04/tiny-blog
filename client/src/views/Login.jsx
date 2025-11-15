@@ -17,7 +17,7 @@ function Login() {
         const userObj = response.data.user || {};
         const userWithToken = { ...userObj, token };
         localStorage.setItem("loggedInUser", JSON.stringify(userWithToken));
-        navigate('/blogs'); // redirect to blogs page
+        navigate('/blogs'); 
       } else {
         alert(response?.data?.message || "Login failed");
       }

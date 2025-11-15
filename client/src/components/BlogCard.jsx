@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from "react-router-dom"; // ✅ Correct import
+import { Link } from "react-router-dom"; 
 
 function BlogCard({
   _id,
@@ -60,7 +60,7 @@ function BlogCard({
         <Link
           className="bg-gray-700 text-white px-6 py-2 rounded-md absolute bottom-4 right-4 cursor-pointer"
           to={`/blog/${slug}`}
-          state={{ blog: blogData }} // ✅ pass blog data here
+          state={{ blog: blogData }}
         >
           Read More
         </Link>

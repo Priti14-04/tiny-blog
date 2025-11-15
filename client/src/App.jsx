@@ -5,10 +5,10 @@ import AllBlogs from "./views/AllBlogs";
 function App() {
   return (
     <div className="font-[Inter] bg-gray-50 text-gray-800">
-      {/* NAVBAR */}
+     
       <nav className="bg-white shadow-md fixed top-0 left-0 w-full z-10">
         <div className="container mx-auto px-6 py-4 flex justify-between items-center">
-          {/* LOGO + TITLE */}
+        
           <Link to="/" className="flex items-center gap-2 group">
             <img
               src="https://th.bing.com/th/id/OIP.vynN_VBU6lxi3pR5LOm9IgHaE_?w=274&h=185&c=7&r=0&o=7&dpr=1.4&pid=1.7&rm=3"
@@ -20,7 +20,7 @@ function App() {
             </span>
           </Link>
 
-          {/* NAV LINKS */}
+         
           <div className="space-x-6 hidden md:flex">
             <Link to="/" className="hover:text-orange-600">Home</Link>
             <Link to="/new" className="hover:text-orange-600">New Blog</Link>
@@ -35,13 +35,13 @@ function App() {
         </div>
       </nav>
 
-      {/* ROUTES SECTION */}
+      
       <Routes>
         <Route
           path="/"
           element={
             <>
-              {/* HERO SECTION */}
+              
               <section
                 id="home"
                 className="min-h-screen flex flex-col justify-center items-center text-center bg-cover bg-center pt-16 fade-in"
@@ -74,7 +74,7 @@ function App() {
                     </Link>
                   </div>
 
-                  {/* Animated Scroll Arrow */}
+                  
                   <div className="mt-16 animate-bounce">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -90,7 +90,7 @@ function App() {
                 </div>
               </section>
 
-              {/* REVIEWS SECTION */}
+             
               <section id="reviews" className="py-20 bg-gray-100 fade-in">
                 <div className="container mx-auto px-6">
                   <h3 className="text-3xl font-bold text-center mb-10 text-gray-800">
@@ -98,7 +98,7 @@ function App() {
                   </h3>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-                    {/* Review Card 1 */}
+                    
                     <div className="bg-white shadow-md rounded-2xl p-6 hover:shadow-lg transition-all flex flex-col items-center text-center">
                       <img
                         src="https://randomuser.me/api/portraits/women/44.jpg"
@@ -111,7 +111,7 @@ function App() {
                       <h4 className="font-semibold text-orange-600">— Priya Sharma</h4>
                     </div>
 
-                    {/* Review Card 2 */}
+                    
                     <div className="bg-white shadow-md rounded-2xl p-6 hover:shadow-lg transition-all flex flex-col items-center text-center">
                       <img
                         src="https://randomuser.me/api/portraits/men/46.jpg"
@@ -124,7 +124,7 @@ function App() {
                       <h4 className="font-semibold text-orange-600">— Rohan Mehta</h4>
                     </div>
 
-                    {/* Review Card 3 */}
+                    
                     <div className="bg-white shadow-md rounded-2xl p-6 hover:shadow-lg transition-all flex flex-col items-center text-center">
                       <img
                         src="https://randomuser.me/api/portraits/women/65.jpg"
@@ -140,7 +140,7 @@ function App() {
                 </div>
               </section>
 
-              {/* FOOTER */}
+              
               <footer className="bg-white border-t mt-10 py-6 text-center text-gray-600">
                 © 2025 Tiny Blog. Made with ❤️ by Priti.
               </footer>
@@ -148,10 +148,10 @@ function App() {
           }
         />
 
-        {/* AllBlogs Route */}
+        {}
         <Route path="/AllBlogs" element={<AllBlogs />} />
 
-        {/* Placeholder for Login & Signup */}
+        {}
         <Route path="/login" element={<div className="pt-24 text-center text-2xl">Login Page</div>} />
         <Route path="/signup" element={<div className="pt-24 text-center text-2xl">Signup Page</div>} />
       </Routes>

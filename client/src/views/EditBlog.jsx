@@ -65,7 +65,7 @@ function EditBlog() {
       if (response?.data?.success) {
         toast.success("Blog Updated Successfully");
         setTimeout(() => {
-          navigate("/"); // You can change this to navigate("/allblogs") if needed
+          navigate("/");
         }, 2000);
       }
     } catch (error) {

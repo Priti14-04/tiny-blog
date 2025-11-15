@@ -23,18 +23,18 @@ function AllBlogs() {
     }
   };
 
-  // Set user when component mounts
+  
   useEffect(() => {
     const currentUser = getCurrentUser();
     setUser(currentUser);
   }, []);
 
-  // Fetch blogs when user changes
+  
   useEffect(() => {
     fetchBlogs();
   }, [user]);
 
-  // Refetch blogs when returning to page
+  
   useEffect(() => {
     window.addEventListener('focus', fetchBlogs);
     return () => window.removeEventListener('focus', fetchBlogs);

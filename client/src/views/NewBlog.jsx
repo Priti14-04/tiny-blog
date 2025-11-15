@@ -22,13 +22,28 @@ function NewBlog() {
       return;
     }
 
+    // Get token from localStorage
+    const token = localStorage.getItem('token');
+    if (!token) {
+      toast.error("User not logged in!");
+      return;
+    }
+
     try {
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}/blogs`, {
-        title,
-        content,
-        category,
-        author: user?._id,
-      });
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/blogs`
+,
+        {
+          title,
+          content,
+          category,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,  // 🔥 IMPORTANT
+          },
+        }
+      );
 
       if (response?.data?.success) {
         toast.success('✅ Blog Saved Successfully!', {
@@ -36,7 +51,6 @@ function NewBlog() {
           position: 'top-center',
         });
 
-        // Redirect after 2 seconds to AllBlogs
         setTimeout(() => {
           window.location.href = '/AllBlogs';
         }, 2000);
@@ -51,7 +65,6 @@ function NewBlog() {
 
   return (
     <div className="container mx-auto p-4 mt-16">
-      {/* Toaster on top-center */}
       <Toaster position="top-center" reverseOrder={false} />
 
       <h1 className="text-3xl font-bold mb-4 text-orange-600">✍️ New Blog</h1>
@@ -77,12 +90,13 @@ function NewBlog() {
       </select>
 
       <MarkdownEditor
-        value={content}
-        height="500px"
-        onChange={(value) => {
-          setContent(value);
-        }}
-      />
+  value={content}
+  height="500px"
+  onChange={(value) => {
+    setContent(value);
+  }}
+/>
+
 
       <button
         className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 mt-6 rounded-lg shadow-md transition-all"
