@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { getCurrentUser } from '../util';
 import MarkdownEditor from '@uiw/react-markdown-editor';
 import { toast, Toaster } from 'react-hot-toast';
 
@@ -15,68 +14,86 @@ function EditBlog() {
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState(BLOG_CATEGORIES[0]);
   const [status, setStatus] = useState("draft");
-  const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     document.documentElement.setAttribute("data-color-mode", "light");
-    setUser(getCurrentUser());
     fetchBlog();
-  }, []);
+  }, [slug]);
 
   const fetchBlog = async () => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_API_URL}/blogs/${slug}`);
-      const blog = response.data.data;
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/blogs/${slug}`);
+      const blog = res.data?.data;
 
       if (!blog) {
-        toast.error("Blog are found");
+        toast.error("Blog not found");
+        navigate('/blogs');
         return;
       }
 
-      setTitle(blog.title);
-      setContent(blog.content);
-      setCategory(blog.category);
-      setStatus(blog.status);
+      setTitle(blog.title || "");
+      setContent(blog.content || "");
+      setCategory(blog.category || BLOG_CATEGORIES[0]);
+      setStatus(blog.status || "draft");
+      setLoading(false);
     } catch (error) {
-      if (error.response?.status === 404) {
-        toast.error("Blog not found");
-      } else if (error.response?.data?.message) {
-        toast.error(error.response.data.message);
-      } else {
-        toast.error("Failed to fetch blog");
-      }
-      console.error("Error details:", error);
-    } finally {
+      console.error("Fetch error:", error.response?.data);
+      toast.error("Failed to fetch blog");
+      navigate('/blogs');
       setLoading(false);
     }
   };
 
   const updateBlog = async () => {
-    try {
-      const response = await axios.put(`${import.meta.env.VITE_API_URL}/blogs/${slug}`, {
-        title,
-        content,
-        category,
-        status,
-        author: user?._id
-      });
+    if (!title.trim() || !content.trim()) {
+      toast.error("Title and content required");
+      return;
+    }
 
-      if (response?.data?.success) {
-        toast.success("Blog Updated Successfully");
-        setTimeout(() => {
-          navigate("/");
-        }, 2000);
+    setSaving(true);
+    try {
+      const logged = JSON.parse(localStorage.getItem("loggedInUser") || "{}");
+      const token = logged?.token;
+
+      if (!token) {
+        toast.error("Please login first");
+        navigate('/login');
+        setSaving(false);
+        return;
+      }
+
+      const res = await axios.put(
+        `${import.meta.env.VITE_API_URL}/blogs/${slug}`,
+        {
+          title: title.trim(),
+          content: content.trim(),
+          category,
+          status
+        },
+        {
+          headers: {
+            "Authorization": `Bearer ${token}`
+          }
+        }
+      );
+
+      if (res.data?.success) {
+        toast.success("Blog updated!");
+        navigate('/blogs');
+      } else {
+        toast.error(res.data?.message || "Update failed");
       }
     } catch (error) {
-      console.error("Error updating blog:", error);
-      toast.error("Failed to update blog");
+      console.error("Update error:", error.response?.data);
+      toast.error(error.response?.data?.message || "Update failed");
+    } finally {
+      setSaving(false);
     }
   };
 
-  if (loading) {
-    return <div className="text-center p-10 text-xl">Loading...</div>;
-  }
+  if (loading) return <div className="p-4">Loading...</div>;
 
   return (
     <div className='container mx-auto p-4'>
@@ -91,40 +108,24 @@ function EditBlog() {
       />
 
       <div className='flex gap-4 my-4'>
-        <select 
-          value={category} 
-          onChange={(e) => setCategory(e.target.value)} 
-          className='border p-2 rounded'
-        >
-          {BLOG_CATEGORIES.map((cat) => (
-            <option key={cat} value={cat}>
-              {cat}
-            </option>
-          ))}
+        <select value={category} onChange={(e) => setCategory(e.target.value)} className='border p-2 rounded'>
+          {BLOG_CATEGORIES.map((cat) => <option key={cat} value={cat}>{cat}</option>)}
         </select>
 
-        <select 
-          value={status} 
-          onChange={(e) => setStatus(e.target.value)}
-          className='border p-2 rounded'
-        >
+        <select value={status} onChange={(e) => setStatus(e.target.value)} className='border p-2 rounded'>
           <option value="draft">Draft</option>
           <option value="published">Published</option>
         </select>
       </div>
 
-      <MarkdownEditor
-        value={content}
-        height='500px'
-        onChange={(value) => setContent(value)}
-      />
+      <MarkdownEditor value={content} height='500px' onChange={(val) => setContent(val)} />
 
       <button 
-        className='bg-blue-500 text-white px-4 py-2 mt-4 rounded cursor-pointer hover:bg-blue-600 transition'
-        type="button"
+        className='bg-blue-500 text-white px-4 py-2 mt-4 rounded disabled:opacity-50'
         onClick={updateBlog}
+        disabled={saving}
       >
-        Update Blog
+        {saving ? 'Updating...' : 'Update Blog'}
       </button>
 
       <Toaster />

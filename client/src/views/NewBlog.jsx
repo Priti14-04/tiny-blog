@@ -1,110 +1,165 @@
 import { useState, useEffect } from 'react';
-import MarkdownEditor from '@uiw/react-markdown-editor';
-import { BLOG_CATEGORIES } from './../constants';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { getCurrentUser } from './../util';
-import toast, { Toaster } from 'react-hot-toast';
+import MarkdownEditor from '@uiw/react-markdown-editor';
+import { toast, Toaster } from 'react-hot-toast';
+
+const BLOG_CATEGORIES = ["Technology", "Travel", "Food", "Lifestyle", "Fashion", "Sports"];
 
 function NewBlog() {
+  const navigate = useNavigate();
   const [content, setContent] = useState('');
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState(BLOG_CATEGORIES[0]);
-  const [user, setUser] = useState(null);
+  const [status, setStatus] = useState('published');
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    document.documentElement.setAttribute('data-color-mode', 'light');
-    setUser(getCurrentUser());
-  }, []);
+    document.documentElement.setAttribute("data-color-mode", "light");
+    
+    // Check if user is logged in
+    const user = JSON.parse(localStorage.getItem("loggedInUser"));
+    if (!user) {
+      toast.error("Please login to create a blog");
+      navigate('/login');
+    }
+  }, [navigate]);
 
   const saveBlog = async () => {
-    if (!title || !content) {
-      toast.error('Please enter title and content!');
+    // Validation
+    if (!title.trim()) {
+      toast.error("Title is required");
+      return;
+    }
+    if (!content.trim()) {
+      toast.error("Content is required");
+      return;
+    }
+    if (!category) {
+      toast.error("Category is required");
       return;
     }
 
-    // Get token from localStorage
-    const token = localStorage.getItem('token');
-    if (!token) {
-      toast.error("User not logged in!");
-      return;
-    }
-
+    setLoading(true);
     try {
+      // Get token from localStorage
+      const logged = JSON.parse(localStorage.getItem("loggedInUser"));
+      const token = logged?.token;
+
+      if (!token) {
+        toast.error("Authentication required. Please login again.");
+        navigate('/login');
+        setLoading(false);
+        return;
+      }
+
+      console.log("Creating blog with token:", token);
+      console.log("Blog data:", { title, content, category, status });
+
       const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/blogs`
-,
+        `${import.meta.env.VITE_API_URL}/blogs`,
         {
-          title,
-          content,
+          title: title.trim(),
+          content: content.trim(),
           category,
+          status
         },
         {
           headers: {
-            Authorization: `Bearer ${token}`,  // 🔥 IMPORTANT
-          },
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
         }
       );
 
-      if (response?.data?.success) {
-        toast.success('✅ Blog Saved Successfully!', {
-          duration: 2000,
-          position: 'top-center',
-        });
+      console.log("Response:", response.data);
 
+      if (response?.data?.success) {
+        toast.success("Blog created successfully!");
         setTimeout(() => {
-          window.location.href = '/AllBlogs';
-        }, 2000);
+          navigate('/blogs');
+        }, 1500);
       } else {
-        toast.error('Something went wrong while saving.');
+        toast.error(response?.data?.message || "Failed to create blog");
       }
     } catch (error) {
-      console.error('Error saving blog:', error);
-      toast.error('Server error! Please try again.');
+      console.error("Full error:", error);
+      console.error("Error response:", error.response?.data);
+      
+      if (error.response?.status === 401) {
+        toast.error("Unauthorized. Please login again.");
+        navigate('/login');
+      } else {
+        toast.error(error.response?.data?.message || error.message || "Failed to create blog");
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="container mx-auto p-4 mt-16">
-      <Toaster position="top-center" reverseOrder={false} />
-
-      <h1 className="text-3xl font-bold mb-4 text-orange-600">✍️ New Blog</h1>
+    <div className='container mx-auto p-4'>
+      <h1 className='text-3xl font-bold mb-6'>Create New Blog</h1>
 
       <input
         type="text"
-        placeholder="Enter Blog Title"
-        className="border border-gray-300 rounded-md p-3 w-full my-4 focus:outline-none focus:ring-2 focus:ring-orange-400"
+        placeholder='Blog Title'
+        className='border p-3 w-full my-4 rounded focus:outline-none focus:ring-2 focus:ring-blue-400'
         value={title}
         onChange={(e) => setTitle(e.target.value)}
       />
 
-      <select
-        value={category}
-        onChange={(e) => setCategory(e.target.value)}
-        className="border border-gray-300 p-3 rounded-md my-4 w-full focus:outline-none focus:ring-2 focus:ring-orange-400"
-      >
-        {BLOG_CATEGORIES.map((cate) => (
-          <option key={cate} value={cate}>
-            {cate}
-          </option>
-        ))}
-      </select>
+      <div className='flex gap-4 my-4'>
+        <select 
+          value={category} 
+          onChange={(e) => setCategory(e.target.value)} 
+          className='border p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400'
+        >
+          {BLOG_CATEGORIES.map((cat) => (
+            <option key={cat} value={cat}>
+              {cat}
+            </option>
+          ))}
+        </select>
+
+        <select 
+          value={status} 
+          onChange={(e) => setStatus(e.target.value)}
+          className='border p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400'
+        >
+          <option value="draft">Draft</option>
+          <option value="published">Published</option>
+        </select>
+      </div>
 
       <MarkdownEditor
-  value={content}
-  height="500px"
-  onChange={(value) => {
-    setContent(value);
-  }}
-/>
+        value={content}
+        height='500px'
+        onChange={(value) => setContent(value)}
+        className='my-4'
+      />
 
+      <div className='flex gap-4 mt-4'>
+        <button 
+          className='bg-green-500 text-white px-6 py-2 rounded cursor-pointer hover:bg-green-600 transition disabled:opacity-50 disabled:cursor-not-allowed font-semibold'
+          type="button"
+          onClick={saveBlog}
+          disabled={loading}
+        >
+          {loading ? 'Creating Blog...' : 'Create Blog'}
+        </button>
 
-      <button
-        className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 mt-6 rounded-lg shadow-md transition-all"
-        type="button"
-        onClick={saveBlog}
-      >
-        💾 Save Blog
-      </button>
+        <button 
+          className='bg-gray-500 text-white px-6 py-2 rounded cursor-pointer hover:bg-gray-600 transition font-semibold'
+          type="button"
+          onClick={() => navigate('/blogs')}
+          disabled={loading}
+        >
+          Cancel
+        </button>
+      </div>
+
+      <Toaster position="top-right" />
     </div>
   );
 }

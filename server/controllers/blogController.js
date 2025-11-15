@@ -1,7 +1,7 @@
 import Blog from "./../models/Blog.js";
 import jwt from "jsonwebtoken";
 
-/* ✅ CREATE BLOG */
+
 const postBlogs = async (req, res) => {
   try {
     const { title, category, content } = req.body;
@@ -35,7 +35,7 @@ const postBlogs = async (req, res) => {
       });
     }
 
-    // Create a new blog
+   
     const newBlog = new Blog({
       title,
       category,
@@ -46,7 +46,7 @@ const postBlogs = async (req, res) => {
 
     const savedBlog = await newBlog.save();
 
-    // Generate slug from title and id
+   
     savedBlog.slug = `${title.toLowerCase().replace(/ /g, "-")}-${savedBlog._id}`.replace(/[^\w-]+/g, "");
     await savedBlog.save();
 
@@ -61,7 +61,7 @@ const postBlogs = async (req, res) => {
   }
 };
 
-/* ✅ GET ALL BLOGS */
+
 const getBlogs = async (req, res) => {
   try {
     const { author, status } = req.query;
@@ -89,7 +89,7 @@ const getBlogs = async (req, res) => {
   }
 };
 
-/* ✅ GET SINGLE BLOG BY SLUG */
+
 const getSingleBlog = async (req, res) => {
   try {
     const { slug } = req.params;
@@ -116,7 +116,7 @@ const getSingleBlog = async (req, res) => {
   }
 };
 
-/* ✅ UPDATE BLOG */
+
 const updateBlog = async (req, res) => {
   try {
     const { slug } = req.params;
