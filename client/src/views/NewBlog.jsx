@@ -17,7 +17,7 @@ function NewBlog() {
   useEffect(() => {
     document.documentElement.setAttribute("data-color-mode", "light");
     
-    // Check if user is logged in
+   
     const user = JSON.parse(localStorage.getItem("loggedInUser"));
     if (!user) {
       toast.error("Please login to create a blog");
@@ -26,7 +26,7 @@ function NewBlog() {
   }, [navigate]);
 
   const saveBlog = async () => {
-    // Validation
+   
     if (!title.trim()) {
       toast.error("Title is required");
       return;
@@ -42,7 +42,7 @@ function NewBlog() {
 
     setLoading(true);
     try {
-      // Get token from localStorage
+      
       const logged = JSON.parse(localStorage.getItem("loggedInUser"));
       const token = logged?.token;
 

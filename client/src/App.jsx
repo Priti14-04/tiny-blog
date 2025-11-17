@@ -23,7 +23,7 @@ function App() {
          
           <div className="space-x-6 hidden md:flex">
             <Link to="/" className="hover:text-orange-600">Home</Link>
-            <Link to="/new" className="hover:text-orange-600">New Blog</Link>
+            <Link to="/about" className="hover:text-orange-600">About</Link>
             <Link to="/login" className="hover:text-orange-600">Login</Link>
             <Link
               to="/signup"
@@ -31,6 +31,7 @@ function App() {
             >
               Signup
             </Link>
+            <Link to="/contact" className="hover:text-orange-600">Contact</Link>
           </div>
         </div>
       </nav>

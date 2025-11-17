@@ -9,6 +9,8 @@ import Signup from './views/Signup'
 import Login from './views/Login'
 import ReadBlog from './views/ReadBlog'
 import App from './App.jsx'
+import About from './views/About.jsx'
+import Contact from './views/Contact.jsx'
 
 
 createRoot(document.getElementById('root')).render(
@@ -21,6 +23,8 @@ createRoot(document.getElementById('root')).render(
     <Route path="/blog/:slug" element={<ReadBlog/>}/>
     <Route path="/login" element={<Login/>}/>
     <Route path="/signup" element={<Signup/>}/>
+    <Route path="/about" element={<About/>}/>
+    <Route path="/contact" element={<Contact/>}/>
 
     <Route
     path="*"
