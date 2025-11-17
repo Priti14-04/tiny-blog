@@ -119,9 +119,9 @@ export default function Contact() {
           <div className="mt-8">
             <h4 className="font-medium mb-2">Follow</h4>
             <div className="flex gap-3">
-              <a className="text-orange-600 hover:underline" href="#" aria-label="github">GitHub</a>
+              <a className="text-orange-600 hover:underline" href="#" aria-label="github">Facebook</a>
               <a className="text-orange-600 hover:underline" href="#" aria-label="twitter">Twitter</a>
-              <a className="text-orange-600 hover:underline" href="#" aria-label="linkedin">LinkedIn</a>
+              <a className="text-orange-600 hover:underline" href="#" aria-label="linkedin">Instagram</a>
             </div>
           </div>
         </aside>
